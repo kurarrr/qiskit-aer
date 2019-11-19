@@ -41,7 +41,7 @@
     ],
     "build_command": [
         "python -mpip install -U scikit-build cython",
-        "python setup.py bdist_wheel --dist-dir={build_cache_dir} -- -DCMAKE_CXX_COMPILER=g++ -DSTATIC_LINKING=True -- -j8",
+        "python setup.py bdist_wheel --dist-dir={build_cache_dir} -- -DCMAKE_CXX_COMPILER=g++ -- -j8",
         "python -mpip install https://github.com/QISKit/qiskit-terra/archive/master.zip"
     ],
 
@@ -61,7 +61,7 @@
     // If missing or the empty string, the tool will be automatically
     // determined by looking for tools on the PATH environment
     // variable.
-    "environment_type": "conda",
+    "environment_type": "virtualenv",
 
     // timeout in seconds for installing any dependencies in environment
     // defaults to 10 min

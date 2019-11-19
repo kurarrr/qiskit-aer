@@ -174,8 +174,7 @@ void Fusion::optimize_circuit(Circuit& circ,
                               const opset_t &allowed_opset,
                               ExperimentData &data) const {
 
-  if (circ.num_qubits < threshold_
-      || !active_)
+  if (circ.num_qubits < threshold_ || !active_)
     return;
 
   bool applied = false;
