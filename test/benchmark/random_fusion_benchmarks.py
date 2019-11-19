@@ -29,10 +29,7 @@ def build_model_circuit_kak(width, depth, seed=None):
         for k in range(width // 2):
             U = random.random_unitary(4, seed).data
             for gate in two_qubit_cnot_decompose(U):
-                print(gate,file=sys.stderr)
-                print(perm,file=sys.stderr)
-                print(k,file=sys.stderr)
-                qs = [qreg[int(perm[2 * k + i])] for i in gate[1][1]]
+                qs = [qreg[int(perm[2 * k + i.index])] for i in gate[1]]
                 pars = gate[0].params
                 name = gate[0].name
                 if name == "cx":
@@ -55,7 +52,7 @@ class RandomFusionSuite:
         self.timeout = 60 * 20
         self.qft_circuits = []
         self.backend = QasmSimulator()
-        for num_qubits in (5, 10, 15, 20, 25):
+        for num_qubits in (5, 10, 15):
             circ = build_model_circuit_kak(num_qubits, num_qubits, 1)
             qobj = assemble(circ)
             self.qft_circuits.append(qobj)
