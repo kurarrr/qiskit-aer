@@ -52,7 +52,7 @@ class RandomFusionSuite:
         self.timeout = 60 * 20
         self.qft_circuits = []
         self.backend = QasmSimulator()
-        for num_qubits in (5, 10, 15):
+        for num_qubits in (5, 10, 15, 20, 25):
             circ = build_model_circuit_kak(num_qubits, num_qubits, 1)
             qobj = assemble(circ)
             self.qft_circuits.append(qobj)
