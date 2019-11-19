@@ -189,8 +189,7 @@ void Fusion::optimize_circuit(Circuit& circ,
     }
   }
 
-  if (fusion_start < circ.ops.size()
-      && aggregate_operations(circ.ops, fusion_start, circ.ops.size()))
+  if (fusion_start < circ.ops.size() && aggregate_operations(circ.ops, fusion_start, circ.ops.size()))
       applied = true;
 
   if (applied) {
