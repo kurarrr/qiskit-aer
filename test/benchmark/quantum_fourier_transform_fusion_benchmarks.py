@@ -26,7 +26,7 @@ def qft_circuit(num_qubit, use_cu1):
 
     circuit.barrier()
     for i in range(num_qubit):
-        circuit.measure(q[i], c[i])
+        circuit.measure(qreg[i], creg[i])
     self.qft_circuits.append(qobj)
 
     return circuit
