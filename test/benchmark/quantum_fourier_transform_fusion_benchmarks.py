@@ -35,7 +35,7 @@ class QuantumFourierTransformFusionSuite:
         self.timeout = 60 * 20
         self.qft_circuits = []
         self.backend = QasmSimulator()
-        num_qubits = [5, 10, 15, 20, 25, 26]
+        num_qubits = [5, 10, 15, 20, 25]
         self.circuit = {}
         for num_qubit in num_qubits:
             for use_cu1 in [True, False]:
