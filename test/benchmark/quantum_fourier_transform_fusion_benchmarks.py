@@ -4,20 +4,26 @@ from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
 from qiskit.compiler import assemble, transpile
 from qiskit.providers.aer import QasmSimulator
 
-def qft(qreg, circuit):
+def qft(qreg, circuit, use_cu1):
     n = len(qreg)
     for i in range(n):
         circuit.h(qreg[i])
 
-    for i in range(n):
-        for j in range(i):
-            l = math.pi/float(2**(i-j))
-            circuit.u1(l/2, qreg[i])
-            circuit.cx(qreg[i], qreg[j])
-            circuit.u1(-l/2, qreg[j])
-            circuit.cx(qreg[i], qreg[j])
-            circuit.u1(l/2, qreg[j])
-        circuit.h(qreg[i])
+    if use_cu1:
+        for i in range(n):
+            for j in range(i):
+                circuit.cu1(math.pi/float(2**(i-j)), qreg[i], qreg[j])
+            circuit.h(qreg[i])
+    else:
+        for i in range(n):
+            for j in range(i):
+                l = math.pi/float(2**(i-j))
+                circuit.u1(l/2, qreg[i])
+                circuit.cx(qreg[i], qreg[j])
+                circuit.u1(-l/2, qreg[j])
+                circuit.cx(qreg[i], qreg[j])
+                circuit.u1(l/2, qreg[j])
+            circuit.h(qreg[i])
 
     return circuit
 
@@ -26,20 +32,21 @@ class QuantumFourierTransformFusionSuite:
         self.timeout = 60 * 20
         self.qft_circuits = []
         self.backend = QasmSimulator()
-        for num_qubits in (5, 10, 15, 20):
-            q = QuantumRegister(num_qubits,"q")
-            c = ClassicalRegister(num_qubits, "c")
-            circ = qft(q, QuantumCircuit(q, c, name="qft"))
-            circ.barrier()
-            for i in range(num_qubits):
-                circ.measure(q[i], c[i])
-            qobj = assemble(circ)
-            self.qft_circuits.append(qobj)
+        for num_qubits in (5, 10, 15, 20, 25, 26):
+            for use_cu1 in [True, False]:
+                q = QuantumRegister(num_qubits,"q")
+                c = ClassicalRegister(num_qubits, "c")
+                circ = qft(q, QuantumCircuit(q, c, name="qft"), use_cu1)
+                circ.barrier()
+                for i in range(num_qubits):
+                    circ.measure(q[i], c[i])
+                qobj = assemble(circ)
+                self.qft_circuits.append(qobj)
 
         self.param_names = ["Quantum Fourier Transform", "Fusion Activated"]
         self.params = (self.qft_circuits, [True, False])
 
-    def setup(self, qobj, fusion_enable):
+    def setup(self, qobj, fusion_enable, use_cu1):
         """ Setup env before benchmarks start """
 
     def time_quantum_fourier_transform(self, qobj, fusion_enable):
